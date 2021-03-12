@@ -9,18 +9,19 @@ import {
   Form,
   FormControl,
 } from "react-bootstrap/"
-const FilterHeader = () => {
+const FilterHeader: React.FC<any> = ({ title, children }) => {
   const [show, setShow] = useState(false)
   const [target, setTarget] = useState(null)
   const ref = useRef(null)
-  const handleClick = (event) => {
+  const handleClick = (event: any) => {
     setShow(!show)
     setTarget(event.target)
   }
   return (
-    <ListGroup.Item className="d-flex justify-content-between align-items-center">
-      <div className="d-flex justify-content-between align-items-center">
-        <div className="mr-2 font-weight-bold">Товары</div>
+    <ListGroup.Item className="d-flex align-items-center">
+      <div className="mr-2 font-weight-bold">Товары</div>
+
+      <div className="d-flex w-100 justify-content-between align-items-center">
         <Button variant="link" onClick={handleClick}>
           Категории
         </Button>
@@ -59,12 +60,12 @@ const FilterHeader = () => {
             </Popover.Content>
           </Popover>
         </Overlay>
-      </div>
-      <div className="right">
-        <Form inline>
-          <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-          <Button variant="outline-secondary">Search</Button>
-        </Form>
+        <div className="right">
+          <Form inline>
+            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+            <Button variant="outline-secondary">Search</Button>
+          </Form>
+        </div>
       </div>
     </ListGroup.Item>
   )
