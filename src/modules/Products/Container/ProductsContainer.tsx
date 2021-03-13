@@ -1,40 +1,58 @@
-import React, { useState, useEffect, useCallback } from "react"
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+  ReactText,
+} from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Card, Row, Col, Button, Modal, Image } from "react-bootstrap/"
-import EditCountProducts from "../EditCountProducts/EditCountProducts"
-import SubHeader from "../../../components/SubHeader/SubHeader"
-import FilterHeader from "../../../components/FilterHeader/FilterHeader"
-import PaginationContainer from "../../../shared/Pagination/Pagination"
+import EditCountProducts from "@root/modules/Products/EditCountProducts/EditCountProducts"
+import SubHeader from "@root/components/SubHeader/SubHeader"
+import FilterHeader from "@root/shared/FilterHeader/FilterHeader"
+import PaginationContainer from "@root/shared/Pagination/Pagination"
 import {
   productsListRequest,
   getCountTotalProduct,
-} from "../store/actions/products.actions"
+  getCategoriesAndType,
+  filterCatArrayID,
+  deleteProduct,
+} from "@root/modules/Products/store/actions/products.actions"
 import { NavLink } from "react-router-dom"
-import LazyLoad from "react-lazyload"
-import { Loader } from "../../../shared/Loader/Loader"
-import { Message } from "../../../shared/Message/Message"
-import { List } from "../Components/Products/List"
+import { Loader } from "@root/shared/Loader/Loader"
+import { Message } from "@root/shared/Message/Message"
+import { List } from "@root/modules/Products/Components/Products/List"
+import { ModalContext } from "@root/modules/modalContext/modal-context"
+import { ContentForFilterHeader } from "@root/modules/Products/Components/Products/ContentForFilterHeader"
 const ProductsContainer: React.FC = () => {
   const [show, setShow] = useState(false)
   const [activeNum, setActiveNum] = useState(1)
-
   const { list, loading, error, totalCount, paginationCount } = useSelector(
-    (state: any) => state.products
+    (state: any) => state.products // todo any
   )
+  const { open, setOpen, data } = useContext(ModalContext)
+
   const dispatch = useDispatch()
-  const handleClose = () => setShow(false)
-  const handleShow = () => setShow(true)
+  const handleClose = () => setOpen!(false)
 
   useEffect(() => {
-    dispatch(productsListRequest())
     dispatch(getCountTotalProduct())
+    dispatch(getCategoriesAndType())
+    dispatch(filterCatArrayID([]))
   }, [])
   const actionRequest = useCallback((num: number) => {
     dispatch(productsListRequest(num))
   }, [])
+  const onDeleteProduct = (id: ReactText) => {
+    dispatch(deleteProduct(id!))
+    setOpen!(false)
+  }
   return (
     <>
-      <FilterHeader />
+      <FilterHeader title={"Товары"}>
+        <ContentForFilterHeader setActiveNum={setActiveNum} />
+      </FilterHeader>
+
       <SubHeader>
         <>
           <div>
@@ -48,28 +66,57 @@ const ProductsContainer: React.FC = () => {
           </div>
         </>
       </SubHeader>
-      <PaginationContainer
-        key={"topPagination"}
-        type={"topPagination"}
-        activeNum={activeNum}
-        setActiveNum={setActiveNum}
-        paginationCount={+paginationCount}
-        actionRequest={actionRequest}
-      />
+      {paginationCount && +paginationCount > 30 ? (
+        <PaginationContainer
+          key={"topPagination"}
+          type={"topPagination"}
+          activeNum={activeNum}
+          setActiveNum={setActiveNum}
+          paginationCount={+paginationCount}
+          actionRequest={actionRequest}
+        />
+      ) : null}
 
       <div style={{ minHeight: "800px" }}>
-        {error && <Message key={error} message={error} />}
+        {list.length === 0 && !loading && (
+          <Message key={"Товаров не найдено"} message={"Товаров не найдено"} />
+        )}
         {loading ? <Loader /> : <List list={list} />}
+        {error && <Message key={error} message={error} />}
       </div>
-      <PaginationContainer
-        key={"bottomPagination"}
-        type={"bottomPagination"}
-        activeNum={activeNum}
-        setActiveNum={setActiveNum}
-        paginationCount={+paginationCount}
-        actionRequest={actionRequest}
-      />
-      <Modal
+      {paginationCount && +paginationCount > 30 ? (
+        <PaginationContainer
+          key={"bottomPagination"}
+          type={"bottomPagination"}
+          activeNum={activeNum}
+          setActiveNum={setActiveNum}
+          paginationCount={+paginationCount}
+          actionRequest={actionRequest}
+        />
+      ) : null}
+      {data && data!.modal === "del-product" && (
+        <Modal
+          show={open}
+          onHide={handleClose}
+          backdrop="static"
+          keyboard={false}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Вы действильно хотите удалить товар? </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{data && <div>Код товара: {data!.id}</div>}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Отмена
+            </Button>
+            <Button onClick={() => onDeleteProduct(data.id!)} variant="danger">
+              Да, удалить
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+
+      {/* <Modal
         show={show}
         onHide={handleClose}
         backdrop="static"
@@ -79,6 +126,7 @@ const ProductsContainer: React.FC = () => {
           <Modal.Title>Количество товара на складе </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+
           <EditCountProducts />
         </Modal.Body>
         <Modal.Footer>
@@ -87,7 +135,7 @@ const ProductsContainer: React.FC = () => {
           </Button>
           <Button variant="primary">Understood</Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
     </>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Pagination } from "react-bootstrap/"
-import { IPaginationProps } from "./Models/pagination.props"
+import { IPaginationProps } from "@root/shared/Pagination/models/pagination.props"
 const PaginationContainer: React.FC<IPaginationProps> = ({
   paginationCount,
   type,
@@ -8,7 +8,7 @@ const PaginationContainer: React.FC<IPaginationProps> = ({
   setActiveNum,
   actionRequest,
 }) => {
-  const round = Math.round(paginationCount / 30)
+  const round = Math.ceil(paginationCount / 30)
   const count = new Array(round).fill("").map((_, index) => index + 1)
   const handlerButtonClick = (action: string) => {
     switch (action) {

@@ -24,6 +24,24 @@ type item = {
   count_all_pay: string
   count_pay_outof_site: string
 }
+export interface ICategories {
+  cat_id: string
+  cat_type: string
+  categories: string
+  cat_type_id: string
+}
+export interface IType {
+  type_id: string
+  type: string
+}
+export interface ICategoriesANDIType {
+  type: IType
+  categories: ICategories
+}
+export interface ISuccessDataProducts {
+  list: IList[]
+  paginationCount: ReactText
+}
 export interface IProjectState {
   list: IList[]
   totalProducts: number | null
@@ -31,6 +49,10 @@ export interface IProjectState {
   loading: boolean
   totalCount: ReactText | null
   paginationCount: ReactText | null
+  categories: ICategories[]
+  type: IType[]
+  filterArrayCatId: string[]
+  searchValue: ReactText | null
 }
 
 export interface IItem {
@@ -38,4 +60,7 @@ export interface IItem {
 }
 export interface IList {
   list: item[]
+}
+export interface IContentForFilterHeader {
+  setActiveNum(num: number): void
 }

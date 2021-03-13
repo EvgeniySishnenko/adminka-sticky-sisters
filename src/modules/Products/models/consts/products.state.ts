@@ -1,4 +1,4 @@
-import { IProjectState } from "../interfaces/products.props"
+import { IProjectState } from "@root/modules/Products/models/interfaces/products.props"
 export const productsState: IProjectState = {
   list: [],
   totalProducts: null,
@@ -6,4 +6,8 @@ export const productsState: IProjectState = {
   error: null,
   totalCount: null,
   paginationCount: null,
+  categories: [],
+  type: [],
+  filterArrayCatId: [],
+  searchValue: null,
 }

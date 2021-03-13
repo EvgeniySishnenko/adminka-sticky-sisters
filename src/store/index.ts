@@ -3,8 +3,6 @@ import createSagaMiddleware from "redux-saga"
 import rootSaga from "./sagas"
 import rootReducer from "./reducers"
 
-// const reducer = combineReducers({})
-
 // const composeEnhancers =
 //   (window as Window).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 

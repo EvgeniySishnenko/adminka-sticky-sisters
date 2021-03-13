@@ -1,7 +1,7 @@
 import React from "react"
 import { Row } from "react-bootstrap"
 import { Item } from "./Item"
-import { IList } from "../../models/interfaces/products.props"
+import { IList } from "@root/modules/Products/models/interfaces/products.props"
 
 export const List: React.FC<IList> = ({ list }) => {
   return (
